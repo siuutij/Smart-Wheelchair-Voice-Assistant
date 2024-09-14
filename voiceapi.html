@@ -110,19 +110,6 @@
 
     <!-- Web Speech API script -->
     <script>
-        // Request for microphone permission when the page loads
-        window.onload = function() {
-            // Request for microphone permission
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then((stream) => {
-                    console.log('Microphone permission granted');
-                })
-                .catch((err) => {
-                    alert('Microphone permission denied: ' + err.message);
-                });
-            window.onload = requestMicPermission;
-        };
-
         // Speech recognition function
         function startRecognition() {
             const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
