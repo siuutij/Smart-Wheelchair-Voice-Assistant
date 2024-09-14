@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Wheelchair Voice Assistant</title>
-
+    
     <!-- Styling for responsiveness and aesthetics -->
     <style>
         /* General reset for clean layout */
@@ -98,65 +98,54 @@
     <!-- Header with Name and Slogan -->
     <div class="header">
         <h1>Smart Wheelchair Voice Assistant</h1>
-        <p>Empowering Mobility: Freedom For Physically Disabled Users</p>
+        <p>Empowering Mobility: Freedom For Physically Disable Users</p>
     </div>
 
     <!-- Status message and button for speech recognition -->
     <p id="status">Click the button to start hearing</p>
     <button onclick="startRecognition()">Start Hearing</button>
-
+    
     <!-- Recognized text will appear here -->
     <p id="recognizedText"></p>
 
     <!-- Web Speech API script -->
     <script>
-        // Request microphone permission when page loads
-        function requestMicPermission() {
+        // Request for microphone permission when the page loads
+        window.onload = function() {
+            // Request for microphone permission
             navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(function(stream) {
-                console.log('Microphone permission granted');
-            })
-            .catch(function(err) {
-                console.log('Microphone permission denied: ', err);
-                document.getElementById('status').textContent = 'Microphone access is required to use voice recognition.';
-            });
-        }
+                .then((stream) => {
+                    console.log('Microphone permission granted');
+                })
+                .catch((err) => {
+                    alert('Microphone permission denied: ' + err.message);
+                });
+            window.onload = requestMicPermission;
+        };
 
-        // Request microphone permission on page load
-        window.onload = requestMicPermission;
-
+        // Speech recognition function
         function startRecognition() {
-    // Check if SpeechRecognition is supported
-    if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-        document.getElementById('status').textContent = 'Speech Recognition is not supported on this browser.';
-        return;
-    }
-    
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-    
-    recognition.onstart = () => {
-        document.getElementById('status').textContent = 'Listening...';
-    };
-    
-    recognition.onresult = (event) => {
-        const speechResult = event.results[0][0].transcript;
-        document.getElementById('recognizedText').textContent = 'Recognized: ' + speechResult;
-        window.ReactNativeWebView.postMessage(speechResult); // If integrating with Thunkable WebViewer
-    };
-    
-    recognition.onerror = (event) => {
-        document.getElementById('status').textContent = 'Error: ' + event.error;
-    };
-
-    recognition.onend = () => {
-        document.getElementById('status').textContent = 'Tap the button to start hearing again.';
-    };
-
-    recognition.start();
-}
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            
+            recognition.onstart = () => {
+                document.getElementById('status').textContent = 'Hearing...';
+            };
+            
+            recognition.onresult = (event) => {
+                const speechResult = event.results[0][0].transcript;
+                document.getElementById('recognizedText').textContent = 'Recognized: ' + speechResult;
+                window.ReactNativeWebView.postMessage(speechResult);  // Send result back to Thunkable
+            };
+            
+            recognition.onerror = (event) => {
+                document.getElementById('status').textContent = 'Error occurred: ' + event.error;
+            };
+            
+            recognition.start();
+        }
     </script>
 
 </body>
