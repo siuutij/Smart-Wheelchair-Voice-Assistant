@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Wheelchair Voice Assistant</title>
+    
+    <!-- Styling for responsiveness and aesthetics -->
+    <style>
+        /* General reset for clean layout */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Name and slogan */
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #f5f5f5;
+            font-style: italic;
+        }
+
+        /* Status message styling */
+        #status {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        /* Recognized text styling */
+        #recognizedText {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        /* Button styling */
+        button {
+            padding: 12px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff7b54;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #e8643d;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            button {
+                font-size: 1em;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header with Name and Slogan -->
+    <div class="header">
+        <h1>Smart Wheelchair Voice Assistant</h1>
+        <p>Empowering Mobility: Freedom For Physically Disable Users</p>
+    </div>
+
+    <!-- Status message and button for speech recognition -->
+    <p id="status">Click the button to start hearing</p>
+    <button onclick="startRecognition()">Start Hearing</button>
+    
+    <!-- Recognized text will appear here -->
+    <p id="recognizedText"></p>
+
+    <!-- Web Speech API script -->
+    <script>
+        function startRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            
+            recognition.onstart = () => {
+                document.getElementById('status').textContent = 'Hearing...';
+            };
+            
+            recognition.onresult = (event) => {
+                const speechResult = event.results[0][0].transcript;
+                document.getElementById('recognizedText').textContent = 'Recognized: ' + speechResult;
+                window.ReactNativeWebView.postMessage(speechResult);  // Send result back to Thunkable
+            };
+            
+            recognition.onerror = (event) => {
+                document.getElementById('status').textContent = 'Error occurred: ' + event.error;
+            };
+            
+            recognition.start();
+        }
+    </script>
+
+</body>
+</html>
