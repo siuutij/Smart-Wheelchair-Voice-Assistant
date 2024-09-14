@@ -126,27 +126,37 @@
         window.onload = requestMicPermission;
 
         function startRecognition() {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
+    // Check if SpeechRecognition is supported
+    if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+        document.getElementById('status').textContent = 'Speech Recognition is not supported on this browser.';
+        return;
+    }
+    
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    
+    recognition.onstart = () => {
+        document.getElementById('status').textContent = 'Listening...';
+    };
+    
+    recognition.onresult = (event) => {
+        const speechResult = event.results[0][0].transcript;
+        document.getElementById('recognizedText').textContent = 'Recognized: ' + speechResult;
+        window.ReactNativeWebView.postMessage(speechResult); // If integrating with Thunkable WebViewer
+    };
+    
+    recognition.onerror = (event) => {
+        document.getElementById('status').textContent = 'Error: ' + event.error;
+    };
 
-            recognition.onstart = () => {
-                document.getElementById('status').textContent = 'Hearing...';
-            };
+    recognition.onend = () => {
+        document.getElementById('status').textContent = 'Tap the button to start hearing again.';
+    };
 
-            recognition.onresult = (event) => {
-                const speechResult = event.results[0][0].transcript;
-                document.getElementById('recognizedText').textContent = 'Recognized: ' + speechResult;
-                window.ReactNativeWebView.postMessage(speechResult);  // Send result back to Thunkable
-            };
-
-            recognition.onerror = (event) => {
-                document.getElementById('status').textContent = 'Error occurred: ' + event.error;
-            };
-
-            recognition.start();
-        }
+    recognition.start();
+}
     </script>
 
 </body>
