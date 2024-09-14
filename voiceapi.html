@@ -110,6 +110,33 @@
 
     <!-- Web Speech API script -->
     <script>
+        // Request for microphone and location permissions when the page loads
+        window.onload = function() {
+            // Request for microphone permission
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then((stream) => {
+                    console.log('Microphone permission granted');
+                })
+                .catch((err) => {
+                    alert('Microphone permission denied: ' + err.message);
+                });
+
+            // Request for location permission
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        console.log('Location permission granted');
+                    },
+                    (error) => {
+                        alert('Location permission denied: ' + error.message);
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        };
+
+        // Speech recognition function
         function startRecognition() {
             const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = 'en-US';
