@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Wheelchair Voice Assistant</title>
     
+    <!-- Styling for responsiveness and aesthetics -->
     <style>
-        /* Basic styling */
+        /* General reset for clean layout */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
+        /* Body styling */
         body {
             font-family: 'Arial', sans-serif;
             display: flex;
@@ -23,22 +26,40 @@
             text-align: center;
             padding: 20px;
         }
+
+        /* Name and slogan */
+        .header {
+            margin-bottom: 30px;
+        }
+
         .header h1 {
             font-size: 2.5em;
             color: #ffffff;
             margin-bottom: 10px;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
+
         .header p {
             font-size: 1.2em;
             color: #f5f5f5;
             font-style: italic;
         }
+
+        /* Status message styling */
         #status {
             font-size: 1.2em;
             margin-bottom: 20px;
             color: #ffffff;
         }
+
+        /* Recognized text styling */
+        #recognizedText {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        /* Button styling */
         button {
             padding: 12px 20px;
             font-size: 1.2em;
@@ -48,9 +69,27 @@
             color: white;
             cursor: pointer;
             transition: background-color 0.3s;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
+
         button:hover {
             background-color: #e8643d;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            button {
+                font-size: 1em;
+                padding: 10px 15px;
+            }
         }
     </style>
 </head>
@@ -59,7 +98,7 @@
     <!-- Header with Name and Slogan -->
     <div class="header">
         <h1>Smart Wheelchair Voice Assistant</h1>
-        <p>Empowering Mobility: Freedom For Physically Disabled Users</p>
+        <p>Empowering Mobility: Freedom For Physically Disable Users</p>
     </div>
 
     <!-- Status message and button for speech recognition -->
@@ -69,21 +108,8 @@
     <!-- Recognized text will appear here -->
     <p id="recognizedText"></p>
 
-    <!-- Web Speech API script with permission request -->
+    <!-- Web Speech API script -->
     <script>
-        async function requestMicrophonePermission() {
-            try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-                console.log("Microphone permission granted.");
-            } catch (err) {
-                console.log("Microphone permission denied.", err);
-                document.getElementById('status').textContent = "Please enable microphone permissions in your browser settings.";
-            }
-        }
-
-        // Request permission on page load
-        window.onload = requestMicrophonePermission;
-
         function startRecognition() {
             const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = 'en-US';
